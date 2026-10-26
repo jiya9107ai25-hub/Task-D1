@@ -1,17 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where
-} from 'firebase/firestore'
-import bcrypt from 'bcryptjs'
-import { db } from '../firebase.js'
 
 function Signup() {
-
     const navigate = useNavigate()
 
     const [name, setName] = useState('')
@@ -27,7 +17,6 @@ function Signup() {
     }
 
     const handleSignup = async (event) => {
-
         event.preventDefault()
         setMessage('')
 
@@ -55,47 +44,46 @@ function Signup() {
         }
 
         try {
-
             setLoading(true)
 
-            const usersReference = collection(db, 'users')
-
-            const existingUserQuery = query(
-                usersReference,
-                where('email', '==', cleanEmail)
+            const response = await fetch(
+                'http://localhost:3000/register',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: cleanName,
+                        email: cleanEmail,
+                        password: password
+                    })
+                }
             )
 
-            const existingUsers = await getDocs(existingUserQuery)
+            const data = await response.json()
 
-            if (!existingUsers.empty) {
-                setMessage('An account with this email already exists.')
+            if (!response.ok) {
+                setMessage(
+                    data.message || 'Unable to create your account.'
+                )
                 return
             }
 
-            const hashedPassword = await bcrypt.hash(password, 10)
-
-            await addDoc(usersReference, {
-                name: cleanName,
-                email: cleanEmail,
-                password: hashedPassword
-            })
-
-            alert('Account created successfully. Please login.')
+            // Success popup
+            alert('Account created successfully! Please login.')
 
             navigate('/login')
 
         } catch (error) {
-
             console.error('Registration error:', error)
 
             setMessage(
-                'Unable to create your account. Please try again.'
+                'Unable to connect to the server. Please try again.'
             )
 
         } finally {
-
             setLoading(false)
-
         }
     }
 
@@ -123,8 +111,11 @@ function Signup() {
                             id="name"
                             type="text"
                             value={name}
-                            onChange={(event) => setName(event.target.value)}
+                            onChange={(event) =>
+                                setName(event.target.value)
+                            }
                             required
+                            disabled={loading}
                             className="border border-gray-300 px-4 py-3 w-full"
                         />
 
@@ -143,8 +134,11 @@ function Signup() {
                             id="email"
                             type="email"
                             value={email}
-                            onChange={(event) => setEmail(event.target.value)}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
                             required
+                            disabled={loading}
                             className="border border-gray-300 px-4 py-3 w-full"
                         />
 
@@ -163,8 +157,11 @@ function Signup() {
                             id="password"
                             type="password"
                             value={password}
-                            onChange={(event) => setPassword(event.target.value)}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
                             required
+                            disabled={loading}
                             className="border border-gray-300 px-4 py-3 w-full"
                         />
 
@@ -187,13 +184,17 @@ function Signup() {
                                 setConfirmPassword(event.target.value)
                             }
                             required
+                            disabled={loading}
                             className="border border-gray-300 px-4 py-3 w-full"
                         />
 
                     </div>
 
                     {message && (
-                        <p className="text-red-600 text-center mb-5">
+                        <p
+                            role="alert"
+                            className="text-red-600 text-center mb-5"
+                        >
                             {message}
                         </p>
                     )}
