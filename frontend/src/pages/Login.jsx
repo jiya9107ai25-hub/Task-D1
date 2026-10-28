@@ -29,11 +29,13 @@ function Login({ onLogin }) {
             message: ''
         })
 
-        const cleanEmail = form.email.trim().toLowerCase()
+        const cleanEmail =
+            form.email.trim().toLowerCase()
 
         if (!cleanEmail || !form.password) {
             updateForm({
-                message: 'Please enter your email and password.'
+                message:
+                    'Please enter your email and password.'
             })
             return
         }
@@ -44,12 +46,15 @@ function Login({ onLogin }) {
             })
 
             const response = await fetch(
-                'http://localhost:3000/login',
+                `${import.meta.env.VITE_API_URL}/login`,
                 {
                     method: 'POST',
+
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type':
+                            'application/json'
                     },
+
                     body: JSON.stringify({
                         email: cleanEmail,
                         password: form.password
@@ -57,7 +62,8 @@ function Login({ onLogin }) {
                 }
             )
 
-            const data = await response.json()
+            const data =
+                await response.json()
 
             if (!response.ok) {
                 updateForm({
@@ -65,31 +71,36 @@ function Login({ onLogin }) {
                         data.message ||
                         'Incorrect email or password.'
                 })
+
                 return
             }
 
-            // Save JWT in browser storage.
+            // Save JWT in browser storage
             localStorage.setItem(
                 'token',
                 data.token
             )
 
-            // Save user information so the session
-            // can be restored after refresh.
+            // Save user information so the
+            // session can remain after refresh
             localStorage.setItem(
                 'user',
                 JSON.stringify(data.user)
             )
 
-            // Update user state inside App.jsx.
+            // Update user state in App.jsx
             onLogin(data.user)
 
+            // Return to home page
             navigate('/', {
                 replace: true
             })
 
         } catch (error) {
-            console.error('Login error:', error)
+            console.error(
+                'Login error:',
+                error
+            )
 
             updateForm({
                 message:
@@ -137,7 +148,8 @@ function Login({ onLogin }) {
                             value={form.email}
                             onChange={(event) =>
                                 updateForm({
-                                    email: event.target.value
+                                    email:
+                                        event.target.value
                                 })
                             }
                             required
@@ -163,7 +175,8 @@ function Login({ onLogin }) {
                             value={form.password}
                             onChange={(event) =>
                                 updateForm({
-                                    password: event.target.value
+                                    password:
+                                        event.target.value
                                 })
                             }
                             required

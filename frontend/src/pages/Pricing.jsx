@@ -106,27 +106,27 @@ function Pricing({ user, onUserUpdate }) {
         try {
             setLoading(true)
 
-            const response =
-                await fetch(
-                    'http://localhost:3000/upgrade-plan',
-                    {
-                        method: 'PATCH',
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/upgrade-plan`,
+                {
+                    method: 'PATCH',
 
-                        headers: {
-                            'Content-Type': 'application/json',
+                    headers: {
+                        'Content-Type':
+                            'application/json',
 
-                            Authorization:
-                                `Bearer ${token}`
-                        },
+                        Authorization:
+                            `Bearer ${token}`
+                    },
 
-                        body: JSON.stringify({
-                            nameOnCard: cleanName,
-                            cardNumber: cleanCard,
-                            expiry: cleanExpiry,
-                            cvv: cleanCvv
-                        })
-                    }
-                )
+                    body: JSON.stringify({
+                        nameOnCard: cleanName,
+                        cardNumber: cleanCard,
+                        expiry: cleanExpiry,
+                        cvv: cleanCvv
+                    })
+                }
+            )
 
             const data =
                 await response.json()
@@ -139,19 +139,15 @@ function Pricing({ user, onUserUpdate }) {
                 return
             }
 
-            // Save updated user details.
             localStorage.setItem(
                 'user',
                 JSON.stringify(data.user)
             )
 
-            // Update App.jsx user state.
             onUserUpdate(data.user)
 
-            // Close payment modal.
             setShowModal(false)
 
-            // Clear payment form.
             setForm({
                 nameOnCard: '',
                 cardNumber: '',
@@ -160,8 +156,6 @@ function Pricing({ user, onUserUpdate }) {
             })
 
             setMessage('')
-
-            // Show custom success popup.
             setShowSuccess(true)
 
         } catch (error) {
@@ -205,10 +199,7 @@ function Pricing({ user, onUserUpdate }) {
 
                 </div>
 
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                    {/* FREE PLAN */}
 
                     <div className="bg-white border border-gray-300 rounded-lg p-8 shadow-sm">
 
@@ -221,23 +212,10 @@ function Pricing({ user, onUserUpdate }) {
                         </p>
 
                         <ul className="space-y-3 text-gray-700 mb-8">
-
-                            <li>
-                                ✓ Up to 5 posts per month
-                            </li>
-
-                            <li>
-                                ✓ Standard image uploads
-                            </li>
-
-                            <li>
-                                ✓ Access to public articles
-                            </li>
-
-                            <li>
-                                ✓ Basic DEV@Deakin features
-                            </li>
-
+                            <li>✓ Up to 5 posts per month</li>
+                            <li>✓ Standard image uploads</li>
+                            <li>✓ Access to public articles</li>
+                            <li>✓ Basic DEV@Deakin features</li>
                         </ul>
 
                         <button
@@ -249,9 +227,6 @@ function Pricing({ user, onUserUpdate }) {
                         </button>
 
                     </div>
-
-
-                    {/* PAID PLAN */}
 
                     <div className="bg-white border-2 border-blue-500 rounded-lg p-8 shadow-md">
 
@@ -278,27 +253,11 @@ function Pricing({ user, onUserUpdate }) {
                         </p>
 
                         <ul className="space-y-3 text-gray-700 mb-8">
-
-                            <li>
-                                ✓ Unlimited posts
-                            </li>
-
-                            <li>
-                                ✓ Larger image uploads
-                            </li>
-
-                            <li>
-                                ✓ Premium articles
-                            </li>
-
-                            <li>
-                                ✓ Priority features
-                            </li>
-
-                            <li>
-                                ✓ Enhanced DEV@Deakin experience
-                            </li>
-
+                            <li>✓ Unlimited posts</li>
+                            <li>✓ Larger image uploads</li>
+                            <li>✓ Premium articles</li>
+                            <li>✓ Priority features</li>
+                            <li>✓ Enhanced DEV@Deakin experience</li>
                         </ul>
 
                         <button
@@ -317,7 +276,6 @@ function Pricing({ user, onUserUpdate }) {
                     </div>
 
                 </div>
-
 
                 {message && !showModal && (
                     <div className="text-center mt-8">
@@ -343,9 +301,6 @@ function Pricing({ user, onUserUpdate }) {
 
             </div>
 
-
-            {/* PAYMENT MODAL */}
-
             {showModal && (
 
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50">
@@ -359,7 +314,6 @@ function Pricing({ user, onUserUpdate }) {
                         <p className="text-gray-600 mb-6">
                             Enter your payment details.
                         </p>
-
 
                         <form onSubmit={handleUpgrade}>
 
@@ -389,7 +343,6 @@ function Pricing({ user, onUserUpdate }) {
                                 />
 
                             </div>
-
 
                             <div className="mb-4">
 
@@ -421,7 +374,6 @@ function Pricing({ user, onUserUpdate }) {
 
                             </div>
 
-
                             <div className="grid grid-cols-2 gap-4 mb-4">
 
                                 <div>
@@ -452,7 +404,6 @@ function Pricing({ user, onUserUpdate }) {
                                     />
 
                                 </div>
-
 
                                 <div>
 
@@ -486,7 +437,6 @@ function Pricing({ user, onUserUpdate }) {
 
                             </div>
 
-
                             {message && (
                                 <p
                                     role="alert"
@@ -495,7 +445,6 @@ function Pricing({ user, onUserUpdate }) {
                                     {message}
                                 </p>
                             )}
-
 
                             <div className="flex gap-3 mt-6">
 
@@ -529,9 +478,6 @@ function Pricing({ user, onUserUpdate }) {
 
                 </div>
             )}
-
-
-            {/* SUCCESS POPUP */}
 
             {showSuccess && (
 

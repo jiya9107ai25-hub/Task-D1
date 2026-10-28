@@ -12,34 +12,53 @@ function Signup() {
     const [loading, setLoading] = useState(false)
 
     const validateEmail = (emailValue) => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
         return emailPattern.test(emailValue)
     }
 
     const handleSignup = async (event) => {
         event.preventDefault()
+
         setMessage('')
 
-        const cleanName = name.trim()
-        const cleanEmail = email.trim().toLowerCase()
+        const cleanName =
+            name.trim()
 
-        if (!cleanName || !cleanEmail || !password || !confirmPassword) {
-            setMessage('Please complete all required fields.')
+        const cleanEmail =
+            email.trim().toLowerCase()
+
+        if (
+            !cleanName ||
+            !cleanEmail ||
+            !password ||
+            !confirmPassword
+        ) {
+            setMessage(
+                'Please complete all required fields.'
+            )
             return
         }
 
         if (!validateEmail(cleanEmail)) {
-            setMessage('Please enter a valid email address.')
+            setMessage(
+                'Please enter a valid email address.'
+            )
             return
         }
 
         if (password.length < 6) {
-            setMessage('Password must contain at least 6 characters.')
+            setMessage(
+                'Password must contain at least 6 characters.'
+            )
             return
         }
 
         if (password !== confirmPassword) {
-            setMessage('Passwords do not match.')
+            setMessage(
+                'Passwords do not match.'
+            )
             return
         }
 
@@ -47,12 +66,15 @@ function Signup() {
             setLoading(true)
 
             const response = await fetch(
-                'http://localhost:3000/register',
+                `${import.meta.env.VITE_API_URL}/register`,
                 {
                     method: 'POST',
+
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type':
+                            'application/json'
                     },
+
                     body: JSON.stringify({
                         name: cleanName,
                         email: cleanEmail,
@@ -61,22 +83,28 @@ function Signup() {
                 }
             )
 
-            const data = await response.json()
+            const data =
+                await response.json()
 
             if (!response.ok) {
                 setMessage(
-                    data.message || 'Unable to create your account.'
+                    data.message ||
+                    'Unable to create your account.'
                 )
                 return
             }
 
-            // Success popup
-            alert('Account created successfully! Please login.')
+            alert(
+                'Account created successfully! Please login.'
+            )
 
             navigate('/login')
 
         } catch (error) {
-            console.error('Registration error:', error)
+            console.error(
+                'Registration error:',
+                error
+            )
 
             setMessage(
                 'Unable to connect to the server. Please try again.'
@@ -112,7 +140,9 @@ function Signup() {
                             type="text"
                             value={name}
                             onChange={(event) =>
-                                setName(event.target.value)
+                                setName(
+                                    event.target.value
+                                )
                             }
                             required
                             disabled={loading}
@@ -135,7 +165,9 @@ function Signup() {
                             type="email"
                             value={email}
                             onChange={(event) =>
-                                setEmail(event.target.value)
+                                setEmail(
+                                    event.target.value
+                                )
                             }
                             required
                             disabled={loading}
@@ -158,7 +190,9 @@ function Signup() {
                             type="password"
                             value={password}
                             onChange={(event) =>
-                                setPassword(event.target.value)
+                                setPassword(
+                                    event.target.value
+                                )
                             }
                             required
                             disabled={loading}
@@ -181,7 +215,9 @@ function Signup() {
                             type="password"
                             value={confirmPassword}
                             onChange={(event) =>
-                                setConfirmPassword(event.target.value)
+                                setConfirmPassword(
+                                    event.target.value
+                                )
                             }
                             required
                             disabled={loading}
@@ -206,7 +242,9 @@ function Signup() {
                             disabled={loading}
                             className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3"
                         >
-                            {loading ? 'Creating...' : 'Create'}
+                            {loading
+                                ? 'Creating...'
+                                : 'Create'}
                         </button>
 
                     </div>
