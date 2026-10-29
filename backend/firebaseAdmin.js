@@ -10,52 +10,35 @@ const {
     getFirestore
 } = require('firebase-admin/firestore')
 
-let firebaseCredential
+const renderServiceAccountPath =
+    '/etc/secrets/serviceAccountKey.json'
 
-const serviceAccountPath =
+const localServiceAccountPath =
     path.join(
         __dirname,
         'serviceAccountKey.json'
     )
 
-// Online deployment
-if (
-    process.env.FIREBASE_PROJECT_ID &&
-    process.env.FIREBASE_CLIENT_EMAIL &&
-    process.env.FIREBASE_PRIVATE_KEY
-) {
-    firebaseCredential = cert({
-        projectId:
-            process.env.FIREBASE_PROJECT_ID,
+let serviceAccountPath
 
-        clientEmail:
-            process.env.FIREBASE_CLIENT_EMAIL,
-
-        privateKey:
-            process.env.FIREBASE_PRIVATE_KEY
-                .replace(/\\n/g, '\n')
-    })
+if (fs.existsSync(renderServiceAccountPath)) {
+    serviceAccountPath =
+        renderServiceAccountPath
+} else {
+    serviceAccountPath =
+        localServiceAccountPath
 }
 
-// Local development
-else if (
-    fs.existsSync(serviceAccountPath)
-) {
-    const serviceAccount =
-        require(serviceAccountPath)
-
-    firebaseCredential =
-        cert(serviceAccount)
-}
-
-else {
-    throw new Error(
-        'Firebase Admin credentials are missing.'
+const serviceAccount =
+    JSON.parse(
+        fs.readFileSync(
+            serviceAccountPath,
+            'utf8'
+        )
     )
-}
 
 initializeApp({
-    credential: firebaseCredential
+    credential: cert(serviceAccount)
 })
 
 const db = getFirestore()
